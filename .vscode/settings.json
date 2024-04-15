@@ -1,0 +1,17 @@
+{
+  "editor.formatOnSave": true,
+  "editor.insertSpaces": true,
+  "editor.tabSize": 2,
+  "editor.trimAutoWhitespace": true,
+  "files.eol": "\n",
+  "files.exclude": {
+    ".git": true,
+    ".husky": true,
+    ".vscode": true,
+    ".DS_Store": true,
+    "node_modules": true
+  },
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "typescript.tsdk": "node_modules/typescript/lib"
+}
