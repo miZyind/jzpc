@@ -1,0 +1,55 @@
+@keyframes icon-blink {
+  0% {
+    filter: brightness(1);
+  }
+  100% {
+    filter: brightness(1.5);
+  }
+}
+#jzpc-root {
+  top: 80px;
+  right: 12px;
+  z-index: 999;
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  border-radius: 50%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  animation: icon-blink 1s ease-out infinite alternate;
+  background-image: url('chrome-extension://__MSG_@@extension_id__/assets/icon128.png');
+}
+#jzpc-root:hover {
+  animation: none;
+  filter: brightness(1.5);
+}
+#jzpc-panel {
+  top: 196px;
+  right: 8px;
+  z-index: 999;
+  width: 300px;
+  display: flex;
+  row-gap: 10px;
+  padding: 10px;
+  font-size: 14px;
+  user-select: none;
+  position: absolute;
+  flex-direction: column;
+  font-family: 'Times Roman';
+  background-color: #140023;
+  border: 1px solid #eecf8c;
+}
+#jzpc-panel > div {
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#jzpc-panel > div > div:first-child {
+  color: #eecf8c;
+}
+#jzpc-panel > div > div:last-child {
+  cursor: pointer;
+  color: white !important;
+}

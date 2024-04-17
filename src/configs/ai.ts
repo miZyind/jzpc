@@ -1,5 +1,6 @@
 export = {
   llama: {
+    enable: process.env.AI_LLAMA_ENABLE === 'true',
     model: String(process.env.AI_LLAMA_MODEL),
   },
   cohere: {

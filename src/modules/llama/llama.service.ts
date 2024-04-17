@@ -6,6 +6,8 @@ import type { LlamaChatSession, LlamaContext } from 'node-llama-cpp';
 
 @Injectable()
 export class LLAMAService {
+  private readonly enable;
+
   private readonly model;
 
   private session: typeof LlamaChatSession | null = null;
@@ -14,21 +16,24 @@ export class LLAMAService {
 
   constructor(
     @Inject(AI_CONFIG)
-    { llama: { model } }: AIConfig,
+    { llama: { enable, model } }: AIConfig,
   ) {
+    this.enable = enable;
     this.model = model;
   }
 
   async onModuleInit(): Promise<void> {
-    // eslint-disable-next-line no-eval -- https://github.com/microsoft/TypeScript/issues/43329
-    const { LlamaContext, LlamaModel, LlamaChatSession } = (await eval(
-      `import('node-llama-cpp')`,
-    )) as typeof import('node-llama-cpp');
+    if (this.enable) {
+      // eslint-disable-next-line no-eval -- https://github.com/microsoft/TypeScript/issues/43329
+      const { LlamaContext, LlamaModel, LlamaChatSession } = (await eval(
+        `import('node-llama-cpp')`,
+      )) as typeof import('node-llama-cpp');
 
-    this.context = new LlamaContext({
-      model: new LlamaModel({ modelPath: `models/${this.model}.gguf` }),
-    });
-    this.session = LlamaChatSession;
+      this.context = new LlamaContext({
+        model: new LlamaModel({ modelPath: `models/${this.model}.gguf` }),
+      });
+      this.session = LlamaChatSession;
+    }
   }
 
   async receive(value: string): Promise<string | null> {
