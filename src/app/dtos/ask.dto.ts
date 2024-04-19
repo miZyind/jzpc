@@ -2,7 +2,7 @@ import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 
 import { Service } from '#app/app.constant';
 
-export class ReceivePromptDTO {
+export class AskDTO {
   @IsEnum(Service)
   readonly service!: Service;
 

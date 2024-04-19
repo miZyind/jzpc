@@ -1,4 +1,4 @@
 export enum Service {
-  Cohere = 'COHERE',
-  LLAMA = 'LLAMA',
+  Cohere = 'cohere',
+  LLAMA = 'llama',
 }

@@ -7,16 +7,18 @@ import {
   Post,
 } from '@nestjs/common';
 
-import { Service } from '#app/app.constant';
-import { ReceivePromptDTO } from '#app/dtos/receive-prompt.dto';
+import { AnalyzeDTO } from '#app/dtos/analyze.dto';
+import { AskDTO } from '#app/dtos/ask.dto';
+import { AnalyticService } from '#modules/analytic/analytic.service';
 import { CohereService } from '#modules/cohere/cohere.service';
 import { LLAMAService } from '#modules/llama/llama.service';
 
 @Controller()
 export class AppController {
   constructor(
-    private readonly cohereService: CohereService,
-    private readonly llamaService: LLAMAService,
+    private readonly analyticService: AnalyticService,
+    private readonly cohere: CohereService,
+    private readonly llama: LLAMAService,
   ) {}
 
   @Get('/')
@@ -26,16 +28,13 @@ export class AppController {
 
   @Post('/prompts')
   @HttpCode(HttpStatus.OK)
-  async receivePrompt(
-    @Body() { service, value }: ReceivePromptDTO,
-  ): Promise<string | null> {
-    switch (service) {
-      case Service.Cohere:
-        return this.cohereService.receive(value);
-      case Service.LLAMA:
-        return this.llamaService.receive(value);
-      default:
-        return null;
-    }
+  async ask(@Body() { service, value }: AskDTO): Promise<string> {
+    return this[service].ask(value);
+  }
+
+  @Post('/analytics')
+  @HttpCode(HttpStatus.OK)
+  async analyze(@Body() { service, ...dto }: AnalyzeDTO): Promise<void> {
+    return this.analyticService.analyze(dto, this[service]);
   }
 }

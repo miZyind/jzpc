@@ -1,4 +1,6 @@
 export const DATA_PATH = './data.log';
+export const DATA_INDENT = 2;
+export const LASTNAME_INDEX = 0;
 export enum PersonalDataBaseKey {
   Name = 'n',
   Nickname = 'nn',
@@ -62,6 +64,8 @@ export const DEFAULT_PERSONAL_DATA = {
   zsh: ZODIAC_SIGN_MAP[ZodiacSign.Unknown],
   // Job
   j: '',
+  // Job (Han)
+  jh: '',
   // Facebook
   fb: '',
   // Instagram

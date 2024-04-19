@@ -18,7 +18,7 @@ export class CohereService {
     this.model = model;
   }
 
-  async receive(value: string): Promise<string> {
+  async ask(value: string): Promise<string> {
     const { generations } = await this.client.generate({
       model: this.model,
       prompt: value,

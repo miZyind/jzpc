@@ -41,3 +41,4 @@ export interface PersonalDataAnalyzed {
   tt: string;
 }
 export type AnalyticData = Record<string, PersonalData | undefined>;
+export type VHDict = Record<string, string>;

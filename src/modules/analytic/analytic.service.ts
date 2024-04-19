@@ -3,18 +3,24 @@ import { readFile, writeFile } from 'fs/promises';
 import { Injectable } from '@nestjs/common';
 
 import {
+  DATA_INDENT,
   DATA_PATH,
   DEFAULT_PERSONAL_DATA,
   PERSONAL_DATA_KEY_MAP,
-  ZODIAC_SIGN_MAP,
-  ZodiacSign,
+  PersonalDataBaseKey,
 } from '#modules/analytic/analytic.constant';
+import {
+  parseHometown,
+  parseName,
+  parseZodiacSign,
+} from '#modules/analytic/analytic.utility';
 
 import type {
   AnalyticData,
   AnalyzeDTO,
-  PersonalDataAnalyzed,
 } from '#modules/analytic/analytic.interface';
+import type { CohereService } from '#modules/cohere/cohere.service';
+import type { LLAMAService } from '#modules/llama/llama.service';
 
 @Injectable()
 export class AnalyticService {
@@ -26,18 +32,33 @@ export class AnalyticService {
 
   async analyze(
     { id, key, context }: AnalyzeDTO,
-    method: (value: string) => Promise<string | null>,
+    service: CohereService | LLAMAService,
   ): Promise<void> {
     const data = this.data[id] ?? DEFAULT_PERSONAL_DATA;
-    const value = await method(
-      `Please infer what's the ${PERSONAL_DATA_KEY_MAP[key]} from the sentence, only respond the answer: "${context}"`,
+    const ask = service.ask.bind(service);
+    const value = await ask(
+      `What's the ${PERSONAL_DATA_KEY_MAP[key]} from the context, answer only: "${context}"`,
     );
     let extra = {};
 
-    if (value !== null) {
+    if (value.length) {
       switch (key) {
-        case 'dob': {
-          extra = this.zodiacSign(new Date(value));
+        case PersonalDataBaseKey.Name: {
+          extra = await parseName(value);
+          break;
+        }
+        case PersonalDataBaseKey.Hometown: {
+          extra = await parseHometown(value);
+          break;
+        }
+        case PersonalDataBaseKey.DateOfBirth: {
+          extra = parseZodiacSign(new Date(value));
+          break;
+        }
+        case PersonalDataBaseKey.Job: {
+          extra = {
+            jh: await ask(`What is "${value}" in 繁體中文, answer only`),
+          };
           break;
         }
         default:
@@ -60,52 +81,6 @@ export class AnalyticService {
   }
 
   private async save(): Promise<void> {
-    await writeFile(DATA_PATH, JSON.stringify(this.data));
+    await writeFile(DATA_PATH, JSON.stringify(this.data, null, DATA_INDENT));
   }
-
-  /*
-    eslint-disable
-      complexity,
-      no-nested-ternary,
-      @typescript-eslint/no-magic-numbers
-    -- Necessary for Zodiac Sign
-  */
-  private zodiacSign(date: Date): Pick<PersonalDataAnalyzed, 'zs' | 'zsh'> {
-    const x = date.getMonth() * 100 + date.getDate();
-    const zs =
-      x >= 221 && x <= 319
-        ? ZodiacSign.Aries
-        : x >= 320 && x <= 420
-          ? ZodiacSign.Taurus
-          : x >= 421 && x <= 520
-            ? ZodiacSign.Gemini
-            : x >= 521 && x <= 622
-              ? ZodiacSign.Cancer
-              : x >= 623 && x <= 722
-                ? ZodiacSign.Leo
-                : x >= 723 && x <= 922
-                  ? ZodiacSign.Virgo
-                  : x >= 823 && x <= 922
-                    ? ZodiacSign.Libra
-                    : x >= 923 && x <= 1021
-                      ? ZodiacSign.Scorpio
-                      : x >= 1022 && x <= 1121
-                        ? ZodiacSign.Sagittarius
-                        : x >= 1122 && x <= 19
-                          ? ZodiacSign.Capricorn
-                          : x >= 20 && x <= 118
-                            ? ZodiacSign.Aquarius
-                            : x >= 119 && x <= 220
-                              ? ZodiacSign.Pisces
-                              : ZodiacSign.Unknown;
-    const zsh = ZODIAC_SIGN_MAP[zs];
-
-    return { zs, zsh };
-  }
-  /*
-    eslint-enable
-      complexity,
-      no-nested-ternary,
-      @typescript-eslint/no-magic-numbers
-  */
 }

@@ -36,11 +36,11 @@ export class LLAMAService {
     }
   }
 
-  async receive(value: string): Promise<string | null> {
+  async ask(value: string): Promise<string> {
     if (this.session && this.context) {
       return new this.session({ context: this.context }).prompt(value);
     }
 
-    return null;
+    return '';
   }
 }
