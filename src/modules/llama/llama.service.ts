@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 
 import { AIConfig, AI_CONFIG } from '#configs';
 
@@ -6,6 +6,8 @@ import type { LlamaChatSession, LlamaContext } from 'node-llama-cpp';
 
 @Injectable()
 export class LLAMAService {
+  private readonly logger = new Logger(LLAMAService.name);
+
   private readonly enable;
 
   private readonly model;
@@ -37,10 +39,16 @@ export class LLAMAService {
   }
 
   async ask(value: string): Promise<string> {
+    this.logger.log(`Q [${value}]`);
+
+    let answer = '';
+
     if (this.session && this.context) {
-      return new this.session({ context: this.context }).prompt(value);
+      answer = await new this.session({ context: this.context }).prompt(value);
     }
 
-    return '';
+    this.logger.log(`A [${answer}]`);
+
+    return answer;
   }
 }

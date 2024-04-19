@@ -1,14 +1,8 @@
 import type {
-  PersonalDataBaseKey,
   ZODIAC_SIGN_MAP,
   ZodiacSign,
 } from '#modules/analytic/analytic.constant';
 
-export interface AnalyzeDTO {
-  id: string;
-  key: PersonalDataBaseKey;
-  context: string;
-}
 export type PersonalData = PersonalDataAnalyzed & PersonalDataBase;
 export interface PersonalDataBase {
   // Name

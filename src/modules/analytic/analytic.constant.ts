@@ -1,5 +1,4 @@
 export const DATA_PATH = './data.log';
-export const DATA_INDENT = 2;
 export const LASTNAME_INDEX = 0;
 export enum PersonalDataBaseKey {
   Name = 'n',
@@ -14,6 +13,13 @@ export const PERSONAL_DATA_KEY_MAP = {
   [PersonalDataBaseKey.Hometown]: 'hometown',
   [PersonalDataBaseKey.DateOfBirth]: 'date of birth',
   [PersonalDataBaseKey.Job]: 'job',
+};
+export const PERSONAL_DATA_EXTRA_MAP = {
+  [PersonalDataBaseKey.Name]: '',
+  [PersonalDataBaseKey.Nickname]: '',
+  [PersonalDataBaseKey.Hometown]: '',
+  [PersonalDataBaseKey.DateOfBirth]: ' with format yyyy-MM-dd',
+  [PersonalDataBaseKey.Job]: '',
 };
 export enum ZodiacSign {
   Unknown = 'Unknown',

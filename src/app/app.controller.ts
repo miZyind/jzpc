@@ -9,6 +9,7 @@ import {
 
 import { AnalyzeDTO } from '#app/dtos/analyze.dto';
 import { AskDTO } from '#app/dtos/ask.dto';
+import { RemarkDTO } from '#app/dtos/remark.dto';
 import { AnalyticService } from '#modules/analytic/analytic.service';
 import { CohereService } from '#modules/cohere/cohere.service';
 import { LLAMAService } from '#modules/llama/llama.service';
@@ -34,7 +35,15 @@ export class AppController {
 
   @Post('/analytics')
   @HttpCode(HttpStatus.OK)
-  async analyze(@Body() { service, ...dto }: AnalyzeDTO): Promise<void> {
-    return this.analyticService.analyze(dto, this[service]);
+  async analyze(
+    @Body() { service, id, key, context }: AnalyzeDTO,
+  ): Promise<void> {
+    return this.analyticService.analyze(this[service], id, key, context);
+  }
+
+  @Post('/remarks')
+  @HttpCode(HttpStatus.OK)
+  async remark(@Body() { id, key, value }: RemarkDTO): Promise<void> {
+    return this.analyticService.remark(id, key, value);
   }
 }

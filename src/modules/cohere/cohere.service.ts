@@ -1,11 +1,13 @@
 import { CohereClient } from 'cohere-ai';
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 
 import { AIConfig, AI_CONFIG } from '#configs';
 
 @Injectable()
 export class CohereService {
+  private readonly logger = new Logger(CohereService.name);
+
   private readonly client;
 
   private readonly model;
@@ -19,13 +21,19 @@ export class CohereService {
   }
 
   async ask(value: string): Promise<string> {
-    const { generations } = await this.client.generate({
+    this.logger.log(`Q [${value}]`);
+
+    const generation = await this.client.generate({
       model: this.model,
       prompt: value,
       maxTokens: 10,
     });
-    const [result] = generations;
+    const {
+      generations: [{ text: answer }],
+    } = generation;
 
-    return result.text;
+    this.logger.log(`A [${answer}]`);
+
+    return answer;
   }
 }
